@@ -1,0 +1,8 @@
+lib/
+out/
+build/
+*.iml
+.idea
+.idea/
+./.idea/*
+
