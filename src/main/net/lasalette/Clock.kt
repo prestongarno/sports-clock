@@ -24,10 +24,10 @@ class Clock(minutes: Int = 0, seconds: Int = 3, milliseconds: Int = 0) {
       milliseconds
   ), timeNotifier)
 
-  private var timer = Timer()
+  private val timer = Timer()
 
   val minutes: Int get() = timeLeft.div(60000).toInt()
-  val seconds: Int get() = ((timeLeft - (minutes*60_000)) / 1000).toInt()
+  val seconds: Int get() = ((timeLeft - (minutes * 60_000)) / 1000).toInt()
   val milli: Int get() = (timeLeft % 1000).toInt()
 
   private val statusNotifier = { _: KProperty<*>, old: Status, _: Status ->
@@ -57,13 +57,6 @@ class Clock(minutes: Int = 0, seconds: Int = 3, milliseconds: Int = 0) {
   fun start() {
     if (status != Status.STARTED)
       this.status = Status.STARTED
-
-    timer.cancel()
-    timer = Timer()
-
-    timer.scheduleAtFixedRate(object : TimerTask() {
-      override fun run() = execute()
-    }, 0L, 100L)
   }
 
   fun pause() {
@@ -71,12 +64,10 @@ class Clock(minutes: Int = 0, seconds: Int = 3, milliseconds: Int = 0) {
       status = Status.COMPLETE
     }
     status = Status.STOPPED
-    timer.cancel()
   }
 
   fun restart(minutes: Int, seconds: Int, milli: Int = 0) {
     status = Status.COMPLETE
-    timer.cancel()
     timeLeft = getTimeInMilliseconds(minutes, seconds, milli)
     start()
   }
@@ -109,15 +100,21 @@ class Clock(minutes: Int = 0, seconds: Int = 3, milliseconds: Int = 0) {
   }
 
   override fun toString(): String = "${
-    if (minutes < 10) "0$minutes" else "$minutes"
+  if (minutes < 10) "0$minutes" else "$minutes"
   }:${
-    if (seconds < 10) "0$seconds" else "$seconds"
-  }${ if (minutes == 0) ".${milli/100}" else "" }"
-
+  if (seconds < 10) "0$seconds" else "$seconds"
+  }${if (minutes == 0) ".${milli / 100}" else ""}"
 
   enum class Status {
     STOPPED, RESET, STARTED, COMPLETE
   }
+
+  init {
+    timer.scheduleAtFixedRate(object : TimerTask() {
+      override fun run() = execute()
+    }, 0L, 100L)
+  }
+
 }
 
 
