@@ -1,7 +1,7 @@
 package net.lasalette
 
 import javafx.application.Platform
-import javafx.beans.value.ChangeListener
+import javafx.geometry.Insets
 import javafx.scene.Parent
 import javafx.scene.control.Button
 import javafx.scene.control.Label
@@ -17,41 +17,39 @@ import javafx.stage.Stage
 
 class Controller(stage: Stage, scene: Parent) {
 
-  val startButton = scene.lookup("#start_button") as ToggleButton
-  val clockDisplay = scene.lookup("#clock_display") as Label
+  private val startButton = scene.lookup("#start_button") as ToggleButton
+  private val clockDisplay = scene.lookup("#clock_display") as Label
 
-  val textMin = scene.lookup("#txt_min") as TextField
-  val textSec = scene.lookup("#txt_sec") as TextField
-  val textMilli = scene.lookup("#txt_milli") as TextField
+  private val textMin = scene.lookup("#txt_min") as TextField
+  private val textSec = scene.lookup("#txt_sec") as TextField
+  private val textMilli = scene.lookup("#txt_milli") as TextField
 
-  val labelOtherTeam = scene.lookup("#label_other_team") as Label
-  val editOtherTeam = scene.lookup("#txt_other_team") as TextField
-  val buttonOtherTeam = scene.lookup("#btn_set_other_team") as Button
+  private val labelOtherTeam = scene.lookup("#label_other_team") as Label
+  private val editOtherTeam = scene.lookup("#txt_other_team") as TextField
+  private val buttonOtherTeam = scene.lookup("#btn_set_other_team") as Button
 
-  val ndlsButtons = scene.lookup("#btn_ndls_scores") as HBox
-  val otherScores = scene.lookup("#btn_other_scores") as HBox
+  private val ndlsButtons = scene.lookup("#btn_ndls_scores") as HBox
+  private val otherScores = scene.lookup("#btn_other_scores") as HBox
 
-  val ndlsScore = scene.lookup("#ndls_score") as Label
-  val otherTeamButtonLabel = scene.lookup("#other_team_score_label") as Label
-  val otherScore = scene.lookup("#other_score") as Label
+  private val ndlsScore = scene.lookup("#ndls_score") as Label
+  private val otherTeamButtonLabel = scene.lookup("#other_team_score_label") as Label
+  private val otherScore = scene.lookup("#other_score") as Label
 
-  val txtNdlsScore = scene.lookup("#txt_ndls_score") as TextField
-  val txtOtherScore = scene.lookup("#txt_other_team_score") as TextField
+  private val txtNdlsScore = scene.lookup("#txt_ndls_score") as TextField
+  private val txtOtherScore = scene.lookup("#txt_other_team_score") as TextField
 
-  val setTimeButton = scene.lookup("#btn_set_time") as Button
+  private val setTimeButton = scene.lookup("#btn_set_time") as Button
 
-  val inputs = listOf(textMin, textSec, textMilli, txtNdlsScore, txtOtherScore)
+  private val inputs = listOf(textMin, textSec, textMilli, txtNdlsScore, txtOtherScore)
 
-  val quarterHbox = scene.lookup("#quarter_hbox") as HBox
-  val quarterLabel = scene.lookup("#quarter_label") as Label
-  val quarterValues = listOf("1st", "2nd", "3rd", "4th")
+  private val quarterHbox = scene.lookup("#quarter_hbox") as HBox
+  private val quarterLabel = scene.lookup("#quarter_label") as Label
+  private val quarterValues = listOf("1st", "2nd", "3rd", "4th")
 
-  val clock = Clock(10, 0, 0)
+  private val clock = Clock(10, 0, 0)
 
-  val updater: TimerListener = { minutes, seconds, milli ->
-    runUI {
-      clockDisplay.text = clock.toString()
-    }
+  private val updater: TimerListener = { _, _, _ ->
+    runUI { clockDisplay.text = clock.toString() }
   }
 
   init {
@@ -77,7 +75,7 @@ class Controller(stage: Stage, scene: Parent) {
     ndlsScore.textProperty().bindBidirectional(txtNdlsScore.textProperty())
     otherScore.textProperty().bindBidirectional(txtOtherScore.textProperty())
 
-    setTimeButton.setOnMouseClicked { event ->
+    setTimeButton.setOnMouseClicked {
       clock.setTime(
           textMin.text.toIntOrNull() ?: 0,
           textSec.text.toIntOrNull() ?: 0,
@@ -85,7 +83,7 @@ class Controller(stage: Stage, scene: Parent) {
       )
     }
 
-    buttonOtherTeam.setOnMouseClicked { action ->
+    buttonOtherTeam.setOnMouseClicked {
       runUI { labelOtherTeam.text = editOtherTeam.text }
     }
     otherTeamButtonLabel.textProperty().bind(labelOtherTeam.textProperty())
@@ -93,7 +91,7 @@ class Controller(stage: Stage, scene: Parent) {
     val defaultStartBackground = startButton.background
 
     clock.subscribe(updater)
-    clock.listen { from, current ->
+    clock.listen { _, current ->
       if (current.status == Clock.Status.COMPLETE) {
         startButton.fire()
       } else if (current.status == Clock.Status.STOPPED) {
@@ -113,6 +111,10 @@ class Controller(stage: Stage, scene: Parent) {
       }
     }
 
+    val scoreButtonInsets = Insets(8.0,8.0,8.0,8.0)
+    listOf(ndlsButtons, otherScores).flatMap { it.children }.filterIsInstance<Button>().forEach {
+      runUI { it.padding = scoreButtonInsets }
+    }
     ndlsButtons.children.filterIsInstance<Button>().forEach { btn ->
       btn.setOnMouseClicked {
         val score = ndlsScore.text.toIntOrNull() ?: 0
@@ -139,7 +141,7 @@ class Controller(stage: Stage, scene: Parent) {
       }
     }
 
-    startButton.selectedProperty().addListener { _, from, selected ->
+    startButton.selectedProperty().addListener { _, _, selected ->
       if (selected) clock.start() else clock.pause()
     }
 
@@ -157,12 +159,11 @@ class Controller(stage: Stage, scene: Parent) {
       }
     }
 
-    toggleQuarter.selectedToggleProperty().addListener(ChangeListener { observable, oldValue, newValue ->
+    toggleQuarter.selectedToggleProperty().addListener { _, _, newValue ->
       newValue.toggleGroup.toggles.forEachIndexed { index, toggle ->
         if (newValue === toggle) runUI { quarterLabel.text = quarterValues[index] + " Quarter" }
       }
-    })
-
+    }
 
     stage.setOnCloseRequest { clock.pause() }
   }
