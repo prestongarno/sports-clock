@@ -66,6 +66,10 @@ class Clock(minutes: Int = 0, seconds: Int = 3, milliseconds: Int = 0) {
     status = Status.STOPPED
   }
 
+  fun kill() {
+    timer.cancel()
+  }
+
   fun restart(minutes: Int, seconds: Int, milli: Int = 0) {
     status = Status.COMPLETE
     timeLeft = getTimeInMilliseconds(minutes, seconds, milli)

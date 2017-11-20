@@ -165,7 +165,7 @@ class Controller(stage: Stage, scene: Parent) {
       }
     }
 
-    stage.setOnCloseRequest { clock.pause() }
+    stage.setOnCloseRequest { clock.kill() }
   }
 }
 
