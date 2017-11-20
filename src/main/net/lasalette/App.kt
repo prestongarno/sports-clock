@@ -1,16 +1,18 @@
 package net.lasalette
 
 import javafx.application.Application
+import javafx.application.Application.launch
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.stage.Stage
 
-class Main : Application() {
+class App : Application() {
 
   @Throws(Exception::class)
   override fun start(primaryStage: Stage) {
     val root = FXMLLoader.load<Parent>(javaClass.getResource("sample.fxml"))
+
     primaryStage.title = "La Salette Clock"
 
     primaryStage.scene = Scene(
@@ -19,12 +21,13 @@ class Main : Application() {
         root.prefHeight(root.layoutBounds.height)
     )
     primaryStage.show()
+    Controller(primaryStage, root)
   }
 
   companion object {
-    @JvmStatic fun main(args: Array<String>) {
-      launch(Main::class.java)
-    }
   }
 }
 
+fun main(args: Array<String>) {
+  launch(App::class.java)
+}

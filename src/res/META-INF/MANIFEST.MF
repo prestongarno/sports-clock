@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: net.lasalette.AppKt
+Class-Path: kotlin-reflect.jar  kotlin-stdlib.jar  kotlin-stdlib-jre7.jar  kotlin-stdlib-jre8.jar  kotlin-test.jar time-1.0.1.jar
