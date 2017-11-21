@@ -93,11 +93,11 @@
       </TitledPane>
    </top>
    <center>
-      <VBox BorderPane.alignment="CENTER">
+      <VBox prefHeight="0.0" prefWidth="232.0" BorderPane.alignment="CENTER">
          <children>
             <VBox>
                <children>
-                  <Label fx:id="clock_display" alignment="BOTTOM_CENTER" maxWidth="1.7976931348623157E308" prefHeight="39.0" prefWidth="324.0" text="00:00" textOverrun="CLIP">
+                  <Label fx:id="clock_display" alignment="BOTTOM_CENTER" maxWidth="1.7976931348623157E308" prefHeight="69.0" prefWidth="0.0" text="00:00" textOverrun="CLIP">
                      <font>
                         <Font name="Droid Sans Mono" size="48.0" />
                      </font>
@@ -112,24 +112,24 @@
             </VBox>
             <Label fx:id="quarter_label" alignment="CENTER" maxWidth="-Infinity" prefHeight="20.0" prefWidth="886.0" text="1st Quarter">
                <font>
-                  <Font size="16.0" />
+                  <Font size="20.0" />
                </font>
             </Label>
          </children>
       </VBox>
    </center>
    <left>
-      <VBox prefHeight="14.0" prefWidth="155.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="0.0" prefWidth="175.0" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </BorderPane.margin>
          <children>
-            <Label prefHeight="34.0" prefWidth="189.0" text="La Salette Lions">
+            <Label prefHeight="30.0" prefWidth="189.0" text="La Salette">
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
                <font>
-                  <Font name="Droid Sans Mono" size="15.0" />
+                  <Font name="Droid Sans Mono" size="22.0" />
                </font>
             </Label>
             <Label fx:id="ndls_score" prefHeight="63.0" prefWidth="117.0" text="0">
@@ -144,20 +144,20 @@
       </VBox>
    </left>
    <right>
-      <VBox BorderPane.alignment="CENTER">
+      <VBox prefHeight="0.0" prefWidth="175.0" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </BorderPane.margin>
          <children>
-            <Label fx:id="label_other_team" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="29.0" prefWidth="127.0" text="BVM Saints">
+            <Label fx:id="label_other_team" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="30.0" prefWidth="206.0" text="BVM Saints">
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
                <font>
-                  <Font name="Droid Sans Mono" size="15.0" />
+                  <Font name="Droid Sans Mono" size="22.0" />
                </font>
             </Label>
-            <Label fx:id="other_score" alignment="TOP_RIGHT" prefHeight="63.0" prefWidth="137.0" text="0">
+            <Label fx:id="other_score" alignment="TOP_RIGHT" prefHeight="63.0" prefWidth="202.0" text="0">
                <VBox.margin>
                   <Insets />
                </VBox.margin>

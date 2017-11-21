@@ -52,14 +52,25 @@ class Controller(stage: Stage, scene: Parent) {
     runUI { clockDisplay.text = clock.toString() }
   }
 
+  val INITIAL_OTHER_TEAM_NAME = "Bad Guys"
+
   init {
-    runUI { clockDisplay.text = clock.toString() }
+    runUI {
+      clockDisplay.text = clock.toString()
+      setTimeButton.isFocusTraversable = false
+      buttonOtherTeam.isFocusTraversable = false
+    }
 
     inputs.forEach { field ->
       field.textProperty().addListener { _, _, newValue ->
         if (!newValue.matches("\\d*".toRegex())) {
           runUI { field.text = newValue.replace("[^\\d]".toRegex(), ""); }
         }
+      }
+    }
+    listOf(Pair(txtNdlsScore, ndlsScore), Pair(txtOtherScore, otherScore)).forEach { (edit, label) ->
+      edit.focusedProperty().addListener { observable ->
+        if (edit.text.isEmpty()) runUI { edit.text = "${ label.text.toIntOrNull() ?: 0 }"}
       }
     }
 
@@ -83,39 +94,40 @@ class Controller(stage: Stage, scene: Parent) {
       )
     }
 
+    runUI {
+      otherTeamButtonLabel.text = INITIAL_OTHER_TEAM_NAME
+      labelOtherTeam.text = INITIAL_OTHER_TEAM_NAME
+      editOtherTeam.text = INITIAL_OTHER_TEAM_NAME
+      otherTeamButtonLabel.textProperty().bind(labelOtherTeam.textProperty())
+    }
     buttonOtherTeam.setOnMouseClicked {
       runUI { labelOtherTeam.text = editOtherTeam.text }
     }
-    otherTeamButtonLabel.textProperty().bind(labelOtherTeam.textProperty())
 
     val defaultStartBackground = startButton.background
+    val backgroundOnRunning = BackgroundFill(
+        Paint.valueOf("GREEN"),
+        startButton.background.fills.first().radii,
+        startButton.background.fills.first().insets
+    )
 
     clock.subscribe(updater)
     clock.listen { _, current ->
-      if (current.status == Clock.Status.COMPLETE) {
-        startButton.fire()
-      } else if (current.status == Clock.Status.STOPPED) {
-        runUI {
+      when {
+        current.status == Clock.Status.COMPLETE -> startButton.fire()
+        current.status == Clock.Status.STOPPED -> runUI {
           startButton.background = defaultStartBackground
           startButton.text = "Start"
         }
-      } else if (current.status == Clock.Status.STARTED) {
-        runUI {
+        current.status == Clock.Status.STARTED -> runUI {
           startButton.text = "Stop"
-          startButton.background = Background(BackgroundFill(
-              Paint.valueOf("GREEN"),
-              startButton.background.fills.first().radii,
-              startButton.background.fills.first().insets
-          ))
+          startButton.background = Background(backgroundOnRunning)
         }
       }
     }
 
-    val scoreButtonInsets = Insets(8.0,8.0,8.0,8.0)
-    listOf(ndlsButtons, otherScores).flatMap { it.children }.filterIsInstance<Button>().forEach {
-      runUI { it.padding = scoreButtonInsets }
-    }
     ndlsButtons.children.filterIsInstance<Button>().forEach { btn ->
+      runUI { btn.isFocusTraversable = false }
       btn.setOnMouseClicked {
         val score = ndlsScore.text.toIntOrNull() ?: 0
         runUI {
@@ -129,6 +141,7 @@ class Controller(stage: Stage, scene: Parent) {
     }
 
     otherScores.children.filterIsInstance<Button>().forEach { btn ->
+      runUI { btn.isFocusTraversable = false }
       btn.setOnMouseClicked {
         val score = otherScore.text.toIntOrNull() ?: 0
         runUI {
@@ -152,6 +165,7 @@ class Controller(stage: Stage, scene: Parent) {
       runUI {
         for (i in 1..4) {
           add(RadioButton("$i").apply {
+            isFocusTraversable = false
             toggleGroup = toggleQuarter
             if (i == 1) toggleQuarter.selectToggle(this)
           })
@@ -163,6 +177,10 @@ class Controller(stage: Stage, scene: Parent) {
       newValue.toggleGroup.toggles.forEachIndexed { index, toggle ->
         if (newValue === toggle) runUI { quarterLabel.text = quarterValues[index] + " Quarter" }
       }
+    }
+
+    runUI {
+      stage.height = quarterLabel.height + quarterLabel.localToScene(quarterLabel.boundsInLocal).maxY + 15
     }
 
     stage.setOnCloseRequest { clock.kill() }
